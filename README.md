@@ -2,8 +2,7 @@
 
 > A feature-rich, zero-dependency web application for tracking academic grades, computing GPA, and visualizing performance.
 
-![Preview](<img width="1842" height="954" alt="Screenshot (77)" src="https://github.com/user-attachments/assets/15eec0cc-7b0e-44da-8fc1-d7e4baf4078e" />
-)
+![Preview](preview.png)
 
 ---
 
