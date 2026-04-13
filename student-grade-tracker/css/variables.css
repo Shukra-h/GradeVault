@@ -1,0 +1,42 @@
+:root {
+  /* ── Palette ── */
+  --bg-base:        #0D0D0F;
+  --bg-surface:     #141416;
+  --bg-raised:      #1C1C20;
+  --bg-hover:       #222228;
+  --border:         #2A2A30;
+  --border-bright:  #3A3A44;
+
+  --text-primary:   #F0EFE8;
+  --text-secondary: #9190A0;
+  --text-muted:     #5A5968;
+
+  --gold:    #E8B84B;
+  --gold-dim: #9A7828;
+  --green:   #5DB87A;
+  --blue:    #5B9CF6;
+  --red:     #E26D6D;
+  --purple:  #A78BFA;
+  --orange:  #F97316;
+
+  /* ── Sidebar ── */
+  --sidebar-width: 220px;
+  --sidebar-collapsed: 64px;
+
+  /* ── Typography ── */
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+  --font-serif:   'Instrument Serif', serif;
+
+  /* ── Radius / Shadow ── */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 20px rgba(0,0,0,0.6);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,0.7);
+
+  /* ── Transitions ── */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 240ms;
+}

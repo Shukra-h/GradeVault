@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GradeVault – Student Grade Tracker</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">GradeVault</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">‹</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">⬡</span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="courses">
+        <span class="nav-icon">◫</span>
+        <span class="nav-label">Courses</span>
+      </button>
+      <button class="nav-item" data-view="grades">
+        <span class="nav-icon">◈</span>
+        <span class="nav-label">Grades</span>
+      </button>
+      <button class="nav-item" data-view="analytics">
+        <span class="nav-icon">◬</span>
+        <span class="nav-label">Analytics</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="student-card" id="studentCard">
+        <div class="student-avatar" id="studentAvatar">S</div>
+        <div class="student-info">
+          <span class="student-name" id="studentNameDisplay">Student</span>
+          <span class="student-meta" id="studentGPADisplay">GPA: —</span>
+        </div>
+      </div>
+      <button class="btn-icon" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        <span class="page-subtitle" id="pageSubtitle">Overview of your academic performance</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" id="primaryActionBtn">+ Add Course</button>
+        <button class="btn btn-ghost" id="exportBtn" title="Export CSV">↓ Export</button>
+      </div>
+    </header>
+
+    <!-- VIEWS -->
+    <div class="view-container">
+
+      <!-- DASHBOARD VIEW -->
+      <section class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card accent-gold" data-index="0">
+            <div class="stat-label">Cumulative GPA</div>
+            <div class="stat-value" id="stat-gpa">—</div>
+            <div class="stat-note" id="stat-gpa-note">No courses yet</div>
+          </div>
+          <div class="stat-card accent-green" data-index="1">
+            <div class="stat-label">Total Credits</div>
+            <div class="stat-value" id="stat-credits">0</div>
+            <div class="stat-note" id="stat-credits-note">Enrolled</div>
+          </div>
+          <div class="stat-card accent-blue" data-index="2">
+            <div class="stat-label">Courses Active</div>
+            <div class="stat-value" id="stat-courses">0</div>
+            <div class="stat-note" id="stat-courses-note">This semester</div>
+          </div>
+          <div class="stat-card accent-red" data-index="3">
+            <div class="stat-label">Lowest Course</div>
+            <div class="stat-value" id="stat-lowest">—</div>
+            <div class="stat-note" id="stat-lowest-note">Needs attention</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card" id="gradeDistCard">
+            <div class="card-header">
+              <h2 class="card-title">Grade Distribution</h2>
+              <span class="card-badge" id="semesterBadge">All Time</span>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="distChart" width="400" height="220"></canvas>
+            </div>
+          </div>
+
+          <div class="card" id="recentActivityCard">
+            <div class="card-header">
+              <h2 class="card-title">Recent Entries</h2>
+            </div>
+            <ul class="activity-list" id="recentList">
+              <li class="empty-state">No grades recorded yet.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" id="gpaTimelineCard">
+          <div class="card-header">
+            <h2 class="card-title">GPA Timeline</h2>
+            <span class="card-badge">Per Semester</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="timelineChart" width="800" height="200"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- COURSES VIEW -->
+      <section class="view" id="view-courses">
+        <div class="toolbar">
+          <input class="search-input" type="search" id="courseSearch" placeholder="Search courses…" />
+          <select class="filter-select" id="semesterFilter">
+            <option value="">All Semesters</option>
+          </select>
+        </div>
+        <div class="courses-grid" id="coursesGrid">
+          <div class="empty-state-card">
+            <p class="empty-icon">◫</p>
+            <p>No courses added yet. Click <strong>+ Add Course</strong> to begin.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRADES VIEW -->
+      <section class="view" id="view-grades">
+        <div class="toolbar">
+          <select class="filter-select" id="courseFilter">
+            <option value="">All Courses</option>
+          </select>
+          <select class="filter-select" id="typeFilter">
+            <option value="">All Types</option>
+            <option value="Assignment">Assignment</option>
+            <option value="Quiz">Quiz</option>
+            <option value="Midterm">Midterm</option>
+            <option value="Final">Final</option>
+            <option value="Project">Project</option>
+            <option value="Lab">Lab</option>
+          </select>
+          <select class="filter-select" id="sortGrades">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="score-desc">Highest Score</option>
+            <option value="score-asc">Lowest Score</option>
+          </select>
+        </div>
+        <div class="grades-table-wrap">
+          <table class="grades-table" id="gradesTable">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Assessment</th>
+                <th>Type</th>
+                <th>Score</th>
+                <th>Weight</th>
+                <th>Date</th>
+                <th>Grade</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="gradesTableBody">
+              <tr><td colspan="8" class="empty-state">No grades yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ANALYTICS VIEW -->
+      <section class="view" id="view-analytics">
+        <div class="analytics-grid">
+          <div class="card">
+            <div class="card-header"><h2 class="card-title">Performance by Course</h2></div>
+            <div class="chart-wrap"><canvas id="courseBarChart" width="700" height="280"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h2 class="card-title">Score by Assessment Type</h2></div>
+            <div class="chart-wrap"><canvas id="typeRadarChart" width="340" height="280"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Weighted Grade Progress</h2></div>
+          <div class="chart-wrap"><canvas id="progressLineChart" width="900" height="220"></canvas></div>
+        </div>
+        <div class="analytics-summary" id="analyticsSummary"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modalOverlay">
+    <!-- ADD/EDIT COURSE MODAL -->
+    <div class="modal" id="courseModal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="courseModalTitle">Add Course</h2>
+        <button class="modal-close" data-close="courseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Course Name *</label>
+          <input class="form-input" type="text" id="courseName" placeholder="e.g. Data Structures & Algorithms" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Course Code *</label>
+            <input class="form-input" type="text" id="courseCode" placeholder="e.g. CS301" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Credits *</label>
+            <input class="form-input" type="number" id="courseCredits" min="1" max="6" value="3" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Semester *</label>
+            <input class="form-input" type="text" id="courseSemester" placeholder="e.g. Fall 2025" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Instructor</label>
+            <input class="form-input" type="text" id="courseInstructor" placeholder="e.g. Dr. Adaeze Okafor" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Grading Scale</label>
+          <select class="form-input" id="courseGradingScale">
+            <option value="4.0">4.0 Scale (Standard)</option>
+            <option value="5.0">5.0 Scale</option>
+            <option value="percentage">Percentage Only</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color Tag</label>
+          <div class="color-picker" id="colorPicker">
+            <span class="color-swatch selected" data-color="#E8B84B" style="background:#E8B84B"></span>
+            <span class="color-swatch" data-color="#5DB87A" style="background:#5DB87A"></span>
+            <span class="color-swatch" data-color="#5B9CF6" style="background:#5B9CF6"></span>
+            <span class="color-swatch" data-color="#E26D6D" style="background:#E26D6D"></span>
+            <span class="color-swatch" data-color="#A78BFA" style="background:#A78BFA"></span>
+            <span class="color-swatch" data-color="#F97316" style="background:#F97316"></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="courseModal">Cancel</button>
+        <button class="btn btn-primary" id="saveCourseBtn">Save Course</button>
+      </div>
+    </div>
+
+    <!-- ADD/EDIT GRADE MODAL -->
+    <div class="modal" id="gradeModal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="gradeModalTitle">Add Grade</h2>
+        <button class="modal-close" data-close="gradeModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Course *</label>
+          <select class="form-input" id="gradeCourse"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assessment Name *</label>
+          <input class="form-input" type="text" id="gradeName" placeholder="e.g. Midterm Exam" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-input" id="gradeType">
+              <option>Assignment</option>
+              <option>Quiz</option>
+              <option>Midterm</option>
+              <option>Final</option>
+              <option>Project</option>
+              <option>Lab</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="gradeDate" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Score Earned *</label>
+            <input class="form-input" type="number" id="gradeScore" min="0" max="1000" placeholder="85" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Score *</label>
+            <input class="form-input" type="number" id="gradeMax" min="1" value="100" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weight (%) <span class="form-hint">Leave blank if unweighted</span></label>
+          <input class="form-input" type="number" id="gradeWeight" min="0" max="100" placeholder="e.g. 30" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input form-textarea" id="gradeNotes" placeholder="Any notes about this assessment…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="gradeModal">Cancel</button>
+        <button class="btn btn-primary" id="saveGradeBtn">Save Grade</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal" id="settingsModal">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close" data-close="settingsModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Student Name</label>
+          <input class="form-input" type="text" id="settingName" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Student ID</label>
+          <input class="form-input" type="text" id="settingID" placeholder="e.g. 20/1234" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Institution</label>
+          <input class="form-input" type="text" id="settingInstitution" placeholder="University name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Default Grading Scale</label>
+          <select class="form-input" id="settingScale">
+            <option value="4.0">4.0 Scale</option>
+            <option value="5.0">5.0 Scale</option>
+          </select>
+        </div>
+        <div class="danger-zone">
+          <p class="danger-title">Danger Zone</p>
+          <button class="btn btn-danger" id="clearDataBtn">Clear All Data</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="settingsModal">Cancel</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+      </div>
+    </div>
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal modal-sm" id="confirmModal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirmTitle">Confirm</h2>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmOk">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/storage.js"></script>
+  <script src="js/grading.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
