@@ -2,7 +2,7 @@
 
 > A feature-rich, zero-dependency web application for tracking academic grades, computing GPA, and visualizing performance.
 
-![Preview](https://via.placeholder.com/900x480/141416/E8B84B?text=GradeVault+Student+Grade+Tracker)
+![Preview](https://grade-vault-shukrahs-projects.vercel.app/)
 
 ---
 
